@@ -1,0 +1,53 @@
+[project]
+name = "uoi-customer-portal-bff"
+version = "1.0.0"
+description = "Backend-for-Frontend that proxies the React UOI Customer Portal to the InsureMO sandbox APIs."
+readme = false
+requires-python = ">=3.10"
+authors = [{ name = "UOI Engineering" }]
+license = { text = "Proprietary" }
+
+# Runtime dependencies — kept intentionally minimal so the BFF can be
+# audited end-to-end. No ORM, no message broker, no auth library. The
+# whole service is FastAPI + httpx + a .env loader.
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.27.0",
+    "httpx>=0.27.0",
+    "python-dotenv>=1.0.0",
+    "python-multipart>=0.0.9",
+]
+
+[project.optional-dependencies]
+# Use `pip install -e .[dev]` to set up the dev toolchain locally.
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "respx>=0.21.0",        # mocks httpx for tests against the InsureMO contract
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+]
+
+[project.scripts]
+uoi-bff = "main:app"
+
+[tool.uvicorn]
+host = "0.0.0.0"
+port = 5000
+reload = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
